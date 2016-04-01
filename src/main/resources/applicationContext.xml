@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:kie="http://drools.org/schema/kie-spring"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+		http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-4.0.xsd
+        http://drools.org/schema/kie-spring
+        http://drools.org/schema/kie-spring.xsd"
+        default-lazy-init="true">
+
+    <description>Spring公共配置</description>
+
+    <!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
+    <context:component-scan base-package="com.hcroad">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+
+    <!-- 配置drools -->
+    <kie:kmodule id="kmodule">
+        <kie:kbase name="kbase" packages="drools">
+            <kie:ksession name="ksession" type="stateful">
+            </kie:ksession>
+        </kie:kbase>
+    </kie:kmodule>
+
+    <bean id="userEntity" class="com.hcroad.demo.drools.entity.User"></bean>
+
+    <!--<context:component-scan base-package="org.kie.spring.annotations"/>-->
+
+    <bean id="kiePostProcessor"
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/>
+
+    <!--<bean id="kiePostProcessor"
+          class="org.kie.spring.annotations.KModuleAnnotationPostProcessor"/>-->
+
+</beans>

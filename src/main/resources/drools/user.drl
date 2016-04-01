@@ -1,0 +1,13 @@
+package com.hcroad.demo.drools.user
+
+import com.hcroad.demo.drools.entity.User;
+
+rule "birthday"
+    no-loop
+when
+    user:User(birthMonth==3)
+then
+    modify(user){setScore(user.getScore() + 10)};
+    user.setMessage(user.getName() + ",本月是你的生日,送给你10个金币.");
+    update(user);
+end
