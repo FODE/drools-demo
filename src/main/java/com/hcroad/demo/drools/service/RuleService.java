@@ -1,21 +1,29 @@
 package com.hcroad.demo.drools.service;
 
+import com.hcroad.demo.drools.dao.UserDao;
 import com.hcroad.demo.drools.entity.User;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/3/30 0030.
  */
 @Service
 public class RuleService {
-    private User user = new User("sanglei");
+    @Autowired
+    private UserDao userDao;
 
     private KieSession kSession;
 
@@ -25,39 +33,65 @@ public class RuleService {
     @PostConstruct
     public void postConstruct(){
         kSession = (KieSession) context.getBean("ksession");
-        System.out.println("kieSession == "+kSession);
+
     }
 
-    public User executeRule() {
+    public List<User> executeRule() {
+        List<User> users = userDao.findAll();
+        if(users == null || users.size() <= 0) {
+            return users;
+        }
 
+        // 执行规则
         KieServices services = KieServices.Factory.get();
         KieContainer kieContainer = services.newKieClasspathContainer();
         KieSession kieSession = kieContainer.newKieSession("ksession");
 
-        user.setBirthMonth(3);
-        user.setMessage("");
+        String[] names = context.getBeanDefinitionNames();
+        for(String name : names) {
+            if(name.endsWith("Dao") || name.endsWith("Service")) {
+                System.out.println(name);
+                System.out.println(context.getBean(name));
+                kieSession.setGlobal(name, context.getBean(name));
+            }
+        }
 
-        kieSession.insert(user);
         kieSession.fireAllRules();
-
-        System.out.println(user.getMessage());
-
-        return user;
+        kieSession.dispose();
+        return users;
     }
 
-    public User executeSpringRule() {
-        if(kSession == null) {
-            user.setMessage("没加载到规则!");
-            return user;
+    public List<User> executeRuleStateless() {
+        List<User> users = userDao.findAll();
+        if(users == null || users.size() <= 0) {
+            return users;
         }
-        user.setMessage("");
-        user.setBirthMonth(3);
-        System.out.println(user);
-        kSession.insert(user);
-        kSession.fireAllRules();
-        System.out.println(user);
 
-        return user;
+        // 执行规则
+        KieServices services = KieServices.Factory.get();
+        KieContainer kieContainer = services.newKieClasspathContainer();
+        StatelessKieSession kieSession = kieContainer.newStatelessKieSession("ksessionLess");
+
+        kieSession.execute(users);
+
+        return users;
+    }
+
+    public List<User> executeSpringRule() {
+        kSession = (KieSession) context.getBean("ksession");
+        List<User> users = userDao.findAll();
+        if(users == null || users.size() <= 0) {
+            return users;
+        }
+
+        // 执行规则
+
+        for(User user : users) {
+            kSession.insert(user);
+        }
+        kSession.fireAllRules();
+        kSession.fireAllRules();
+        return users;
     }
 
 }

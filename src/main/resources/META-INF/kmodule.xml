@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kmodule xmlns="http://www.drools.org/xsd/kmodule">
 
-<kbase name="employeeBase" packages="drools">
-    <ksession name="ksession" type="stateless"/>
+<kbase name="kbase" packages="drools.rules">
+    <ksession name="ksession" type="stateful" />
+    <ksession name="ksessionLess" type="stateless"/>
 </kbase>
 
 </kmodule>

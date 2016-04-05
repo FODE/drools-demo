@@ -26,9 +26,8 @@
 
     <!-- 配置drools -->
     <kie:kmodule id="kmodule">
-        <kie:kbase name="kbase" packages="drools">
-            <kie:ksession name="ksession" type="stateful">
-            </kie:ksession>
+        <kie:kbase name="kbase" packages="drools.rules" scope="prototype">
+            <kie:ksession name="ksession" type="stateful" scope="prototype" />
         </kie:kbase>
     </kie:kmodule>
 

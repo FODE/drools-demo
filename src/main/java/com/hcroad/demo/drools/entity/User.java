@@ -4,14 +4,25 @@ package com.hcroad.demo.drools.entity;
  * Created by Administrator on 2016/3/30 0030.
  */
 public class User {
+    private Integer id;
     private String name;
-    private int birthMonth;
-    private long score = 0L;
+    private Integer cost = 0;
+    private Integer score = 0;
     private String message;
 
     public User(){}
-    public User(String name){
+    public User(Integer id, String name, Integer cost) {
+        this.id = id;
         this.name = name;
+        this.cost = cost;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -22,19 +33,19 @@ public class User {
         this.name = name;
     }
 
-    public int getBirthMonth() {
-        return birthMonth;
+    public Integer getCost() {
+        return cost;
     }
 
-    public void setBirthMonth(int birthMonth) {
-        this.birthMonth = birthMonth;
+    public void setCost(Integer cost) {
+        this.cost = cost;
     }
 
-    public long getScore() {
+    public Integer getScore() {
         return score;
     }
 
-    public void setScore(long score) {
+    public void setScore(Integer score) {
         this.score = score;
     }
 
@@ -44,15 +55,5 @@ public class User {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "name='" + name + '\'' +
-                ", birthMonth=" + birthMonth +
-                ", score=" + score +
-                ", message='" + message + '\'' +
-                '}';
     }
 }

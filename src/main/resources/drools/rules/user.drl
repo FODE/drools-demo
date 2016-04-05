@@ -1,0 +1,59 @@
+package com.hcroad.demo.drools.user
+
+import com.hcroad.demo.drools.entity.*;
+import com.hcroad.demo.drools.dao.*;
+import com.hcroad.demo.drools.service.*;
+
+global UserDao userDao;
+global RuleService ruleService;
+global UserService userService;
+
+
+rule "all"
+    no-loop
+when
+    $user:User(cost >= 1000) from userDao.findAll()
+then
+    $user.setMessage("Are you crazy? You spend " + $user.getCost() + "$");
+end
+
+rule "20Score"
+    no-loop
+when
+    user:User(cost >= 100 && cost < 500)
+then
+    modify(user){setScore(user.getScore() + 20)};
+    user.setMessage(user.getName() + ",your cost is:" + user.getCost() + ",award you 20 score!");
+    update(user);
+end
+
+rule "40Score"
+    no-loop
+when
+    user:User(cost >= 500 && cost < 1000)
+then
+    modify(user){setScore(user.getScore() + 40)};
+    user.setMessage(user.getName() + ",your cost is:" + user.getCost() + ",award you 40 score!");
+    update(user);
+end
+
+rule "5Score"
+    no-loop
+when
+    user:User(cost < 100 && cost > 0)
+then
+    modify(user){setScore(user.getScore() + 5)};
+    user.setMessage(user.getName() + ",your cost is:" + user.getCost() + ",award you 5 score!");
+    update(user);
+end
+
+rule "50Score"
+    no-loop
+when
+    user:User(cost >= 1000)
+then
+    modify(user){setScore(user.getScore() + 50)};
+    user.setMessage(user.getName() + ",your cost is:" + user.getCost() + ",award you 50 score!");
+    update(user);
+end
+

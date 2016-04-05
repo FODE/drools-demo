@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2016/3/30 0030.
  */
@@ -41,13 +43,21 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping("/rule/{type}")
-    public User rule(@PathVariable("type") String type) {
+    public List<User> rule(@PathVariable("type") String type) {
         if("spring".equals(type.trim().toLowerCase())) {
             return ruleService.executeSpringRule();
         } else if("drools".equals(type.trim().toLowerCase())) {
             return ruleService.executeRule();
+        } else if("stateLess".equals(type.trim())) {
+            return ruleService.executeRuleStateless();
         }
         return null;
+    }
+
+    @ResponseBody
+    @RequestMapping("/user/update/{id}/{cost}")
+    public User updateUser(@PathVariable("id") Integer id, @PathVariable("cost") Integer cost) {
+        return userService.updateUser(id, cost);
     }
 
 }
